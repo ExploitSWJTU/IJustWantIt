@@ -12,11 +12,11 @@ class OCW:
         self.course_id = course_id
         self.add_type = add_type
 
-    def choose_course(self):
+    def login(self):
+        sdk = muggle_ocr.SDK(model_type=muggle_ocr.ModelType.Captcha)
         while True:
             captcha = self.s.get(self.base_url+'/yethan/GetRandomNumberToJPEG').content
-            sdk = muggle_ocr.SDK(model_type=muggle_ocr.ModelType.Captcha)
-            ranstring = sdk.predict(image_bytes=captcha)
+            ranstring = sdk.predict(captcha)
 
             data = {
                 'username': self.username,
@@ -31,6 +31,7 @@ class OCW:
 
         self.s.post(self.base_url+'/yethan/UserLoadingAction')
 
+    def choose_course(self):
         data = {
             'setAction': 'registerCourse',
             'courseId': self.course_id,
@@ -46,4 +47,6 @@ class OCW:
             time.sleep(60)
 
 if __name__ == '__main__':
-    OCW('username', 'password', 'course_id', 'add_type').choose_course()
+    ocw = OCW('username', 'password', 'course_id', 'add_type')
+    ocw.login()
+    ocw.choose_course()
